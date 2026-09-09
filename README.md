@@ -54,7 +54,7 @@ Instalar las dependencias:
 npm install
 ```
 
-## Variables de entorno
+## Configuración
 
 Crear un archivo `.env` en la raíz del proyecto tomando como referencia el archivo `.env.example`.
 
