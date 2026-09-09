@@ -1,13 +1,11 @@
-const validated = (message) => {
-  return (req, res, next) => {
-    if (message) {
-      return res.status(400).json({
-        message: message
-      });
-    }
+const validated = (req, res, next) => {
+  if (req.validationError) {
+    return res.status(400).json({
+      message: req.validationError
+    });
+  }
 
-    next();
-  };
+  next();
 };
 
 module.exports = validated;

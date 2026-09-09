@@ -1,7 +1,7 @@
 const express = require('express');
 const postsService = require('../services/posts.service');
-const validatePost = require('../middleware/validatePost');
-const validated = require('../middleware/validated');
+const validatePost = require('../middlewares/validatePost');
+const validated = require('../middlewares/validated');
 
 const router = express.Router();
 

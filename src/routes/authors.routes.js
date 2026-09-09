@@ -1,6 +1,7 @@
 const express = require('express');
 const authorsService = require('../services/authors.service');
-const validateAuthor = require('../middleware/validateAuthor');
+const validateAuthor = require('../middlewares/validateAuthor');
+const validated = require('../middlewares/validated');
 
 const router = express.Router();
 
@@ -35,61 +36,72 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Crear un autor
-router.post('/', validateAuthor, async (req, res, next) => {
-  try {
-    const { name, email, bio } = req.body || {};
+router.post(
+  '/',
+  validateAuthor,
+  validated,
+  async (req, res, next) => {
+    try {
+      const { name, email, bio } = req.body || {};
 
-    const author = await authorsService.createAuthor(
-      name,
-      email,
-      bio
-    );
+      const author = await authorsService.createAuthor(
+        name,
+        email,
+        bio
+      );
 
-    res.status(201).json(author);
+      res.status(201).json(author);
 
-  } catch (error) {
-    // Código de PostgreSQL para valor UNIQUE duplicado
-    if (error.code === '23505') {
-      return res.status(400).json({
-        message: 'El email ya está registrado'
-      });
+    } catch (error) {
+      // PostgreSQL: email duplicado
+      if (error.code === '23505') {
+        return res.status(400).json({
+          message: 'El email ya está registrado'
+        });
+      }
+
+      next(error);
     }
-
-    next(error);
   }
-});
+);
 
 // Actualizar un autor
-router.put('/:id', validateAuthor, async (req, res, next) => {
-  try {
-    const id = req.params.id;
-    const { name, email, bio } = req.body || {};
+router.put(
+  '/:id',
+  validateAuthor,
+  validated,
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
+      const { name, email, bio } = req.body || {};
 
-    const author = await authorsService.updateAuthor(
-      id,
-      name,
-      email,
-      bio
-    );
+      const author = await authorsService.updateAuthor(
+        id,
+        name,
+        email,
+        bio
+      );
 
-    if (!author) {
-      return res.status(404).json({
-        message: 'Autor no encontrado'
-      });
+      if (!author) {
+        return res.status(404).json({
+          message: 'Autor no encontrado'
+        });
+      }
+
+      res.json(author);
+
+    } catch (error) {
+      // PostgreSQL: email duplicado
+      if (error.code === '23505') {
+        return res.status(400).json({
+          message: 'El email ya está registrado'
+        });
+      }
+
+      next(error);
     }
-
-    res.json(author);
-
-  } catch (error) {
-    if (error.code === '23505') {
-      return res.status(400).json({
-        message: 'El email ya está registrado'
-      });
-    }
-
-    next(error);
   }
-});
+);
 
 // Eliminar un autor
 router.delete('/:id', async (req, res, next) => {
