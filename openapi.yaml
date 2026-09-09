@@ -1,0 +1,254 @@
+openapi: 3.0.3
+
+info:
+  title: MiniBlog API
+  version: 1.0.0
+  description: API REST para gestionar autores y publicaciones usando Node.js, Express y PostgreSQL.
+
+servers:
+  - url: http://localhost:3000
+    description: Servidor local
+
+tags:
+  - name: Authors
+  - name: Posts
+
+paths:
+
+  /authors:
+    get:
+      tags:
+        - Authors
+      summary: Obtener todos los autores
+      responses:
+        '200':
+          description: Lista de autores obtenida correctamente
+
+    post:
+      tags:
+        - Authors
+      summary: Crear un autor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                  example: Ana Pérez
+                email:
+                  type: string
+                  example: ana@example.com
+                bio:
+                  type: string
+                  example: Desarrolladora backend
+      responses:
+        '201':
+          description: Autor creado correctamente
+        '400':
+          description: Datos inválidos o email duplicado
+        '500':
+          description: Error interno del servidor
+
+  /authors/{id}:
+    get:
+      tags:
+        - Authors
+      summary: Obtener un autor por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Autor encontrado
+        '404':
+          description: Autor no encontrado
+
+    put:
+      tags:
+        - Authors
+      summary: Actualizar un autor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - email
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                bio:
+                  type: string
+      responses:
+        '200':
+          description: Autor actualizado correctamente
+        '400':
+          description: Datos inválidos o email duplicado
+        '404':
+          description: Autor no encontrado
+
+    delete:
+      tags:
+        - Authors
+      summary: Eliminar un autor
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Autor eliminado correctamente
+        '404':
+          description: Autor no encontrado
+
+  /posts:
+    get:
+      tags:
+        - Posts
+      summary: Obtener todos los posts
+      responses:
+        '200':
+          description: Lista de posts obtenida correctamente
+
+    post:
+      tags:
+        - Posts
+      summary: Crear un post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+                - author_id
+              properties:
+                title:
+                  type: string
+                  example: Mi primer post
+                content:
+                  type: string
+                  example: Contenido del post
+                author_id:
+                  type: integer
+                  example: 1
+                published:
+                  type: boolean
+                  example: true
+      responses:
+        '201':
+          description: Post creado correctamente
+        '400':
+          description: Datos inválidos o autor inexistente
+        '500':
+          description: Error interno del servidor
+
+  /posts/{id}:
+    get:
+      tags:
+        - Posts
+      summary: Obtener un post por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post encontrado
+        '404':
+          description: Post no encontrado
+
+    put:
+      tags:
+        - Posts
+      summary: Actualizar un post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - content
+                - author_id
+              properties:
+                title:
+                  type: string
+                content:
+                  type: string
+                author_id:
+                  type: integer
+                published:
+                  type: boolean
+      responses:
+        '200':
+          description: Post actualizado correctamente
+        '400':
+          description: Datos inválidos o autor inexistente
+        '404':
+          description: Post no encontrado
+
+    delete:
+      tags:
+        - Posts
+      summary: Eliminar un post
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Post eliminado correctamente
+        '404':
+          description: Post no encontrado
+
+  /posts/author/{authorId}:
+    get:
+      tags:
+        - Posts
+      summary: Obtener posts de un autor con detalle del autor
+      parameters:
+        - name: authorId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Posts del autor obtenidos correctamente
+        '404':
+          description: No se encontraron posts para este autor
