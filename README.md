@@ -234,7 +234,7 @@ La API utiliza códigos HTTP como:
 
 ## Arquitectura del proyecto
 
-La aplicación está organizada separando rutas, servicios, conexión a la base de datos y manejo de errores.
+La aplicación está organizada separando rutas, servicios, conexión a la base de datos, validaciones y manejo de errores.
 
 ```text
 src/
@@ -245,17 +245,22 @@ src/
 │   ├── authors.service.js
 │   └── posts.service.js
 ├── middlewares/
-│   └── errorHandler.js
+│   ├── errorHandler.js
+│   ├── validateAuthor.js
+│   ├── validatePost.js
+│   └── validated.js
 ├── app.js
-├── db.js
-└── server.js
+├── index.js
+└── pool.js
 ```
 
 Las rutas gestionan las solicitudes y respuestas HTTP.
 
 Los services contienen las consultas SQL y la lógica de acceso a PostgreSQL.
 
-La conexión a la base de datos está centralizada en `db.js`.
+La conexión a la base de datos está centralizada en `pool.js`.
+
+El archivo `index.js` inicia el servidor utilizando el puerto definido por `process.env.PORT` o el puerto `3000` en entorno local.
 
 Las consultas SQL utilizan parámetros como `$1`, `$2`, etc., evitando concatenar directamente los valores recibidos.
 
@@ -274,13 +279,16 @@ npm test
 
 El proyecto incluye 7 tests automáticos para comprobar endpoints, códigos HTTP y validaciones de Authors y Posts.
 
-## Swagger / OpenAPI
-
-La especificación OpenAPI se encuentra en:
+Resultado de las pruebas:
 
 ```text
-openapi.yaml
+Test Suites: 1 passed, 1 total
+Tests:       7 passed, 7 total
 ```
+
+## Swagger / OpenAPI
+
+La documentación OpenAPI se encuentra configurada en el proyecto.
 
 Con el servidor ejecutándose localmente, Swagger UI puede visualizarse en:
 
@@ -292,20 +300,86 @@ Desde Swagger se pueden consultar los endpoints disponibles de Authors y Posts.
 
 ## Deploy en Railway
 
-La aplicación será desplegada utilizando Railway.
+La aplicación fue desplegada utilizando Railway.
 
-La URL pública de la API se agregará aquí después de completar el deployment.
+El proyecto utiliza dos servicios dentro de Railway:
+
+- Un servicio para la aplicación Node.js / Express.
+- Un servicio PostgreSQL para la base de datos.
+
+### Proceso de deployment
+
+1. Se subió el proyecto al repositorio de GitHub.
+2. Se conectó el repositorio de GitHub con Railway.
+3. Se creó un servicio PostgreSQL dentro del proyecto de Railway.
+4. Se configuraron las variables de entorno de la aplicación.
+5. Se configuraron referencias entre el servicio de la API y el servicio PostgreSQL.
+6. Railway ejecuta la aplicación mediante:
+
+```bash
+npm start
+```
+
+7. El script de inicio configurado en `package.json` ejecuta:
+
+```bash
+node src/index.js
+```
+
+8. En la base de datos PostgreSQL de Railway se ejecutó el archivo `setup.sql` para crear las tablas `authors` y `posts`.
+9. Se generó un dominio público para acceder a la API.
+10. Se verificó el funcionamiento de la API, los endpoints de autores y posts, y Swagger.
+
+### Variables de entorno en Railway
+
+La aplicación utiliza las siguientes variables de referencia para conectarse al servicio PostgreSQL:
+
+```env
+DB_USER=${{Postgres.PGUSER}}
+DB_HOST=${{Postgres.PGHOST}}
+DB_NAME=${{Postgres.PGDATABASE}}
+DB_PASSWORD=${{Postgres.PGPASSWORD}}
+DB_PORT=${{Postgres.PGPORT}}
+```
+
+Railway proporciona automáticamente la variable `PORT` utilizada por la aplicación en producción.
+
+### Internal URL
+
+La comunicación entre la aplicación y PostgreSQL se realiza mediante la red privada de Railway.
+
+El host interno utilizado por PostgreSQL es:
+
+```text
+postgres.railway.internal
+```
+
+La aplicación utiliza este valor a través de la variable `DB_HOST`.
 
 ### URL pública
 
 ```text
-Pendiente de deployment
+https://proyecto2mbguadalupevillena-production.up.railway.app
+```
+
+### Endpoints en producción
+
+```text
+https://proyecto2mbguadalupevillena-production.up.railway.app/
+```
+
+```text
+https://proyecto2mbguadalupevillena-production.up.railway.app/authors
+```
+
+```text
+https://proyecto2mbguadalupevillena-production.up.railway.app/posts
 ```
 
 ### Swagger en producción
 
 ```text
-Pendiente de deployment
+https://proyecto2mbguadalupevillena-production.up.railway.app/api-docs
 ```
 
 ## Repositorio
@@ -328,9 +402,11 @@ Se utilizó principalmente para:
 - Apoyar la integración entre Express y PostgreSQL.
 - Revisar consultas SQL parametrizadas.
 - Crear y revisar tests automáticos con Jest y Supertest.
-- Crear la documentación OpenAPI/Swagger.
+- Crear y revisar la documentación OpenAPI/Swagger.
 - Revisar validaciones y manejo de errores.
-- Apoyar la documentación del proyecto.
+- Configurar y solucionar errores durante el deployment en Railway.
+- Configurar la conexión entre la aplicación y PostgreSQL en Railway.
+- Apoyar la documentación final del proyecto.
 
 Las funcionalidades fueron probadas durante el desarrollo antes de la entrega.
 
