@@ -1,5 +1,6 @@
 const express = require('express');
 const authorsService = require('../services/authors.service');
+const validateAuthor = require('../middleware/validateAuthor');
 
 const router = express.Router();
 
@@ -34,22 +35,9 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Crear un autor
-router.post('/', async (req, res, next) => {
+router.post('/', validateAuthor, async (req, res, next) => {
   try {
-  const { name, email, bio } = req.body || {};
-    // Validar nombre
-    if (!name || name.trim() === '') {
-      return res.status(400).json({
-        message: 'El nombre es obligatorio'
-      });
-    }
-
-    // Validar email
-    if (!email || email.trim() === '') {
-      return res.status(400).json({
-        message: 'El email es obligatorio'
-      });
-    }
+    const { name, email, bio } = req.body || {};
 
     const author = await authorsService.createAuthor(
       name,
@@ -72,23 +60,10 @@ router.post('/', async (req, res, next) => {
 });
 
 // Actualizar un autor
-router.put('/:id', async (req, res, next) => {
+router.put('/:id', validateAuthor, async (req, res, next) => {
   try {
     const id = req.params.id;
     const { name, email, bio } = req.body || {};
-    // Validar nombre
-    if (!name || name.trim() === '') {
-      return res.status(400).json({
-        message: 'El nombre es obligatorio'
-      });
-    }
-
-    // Validar email
-    if (!email || email.trim() === '') {
-      return res.status(400).json({
-        message: 'El email es obligatorio'
-      });
-    }
 
     const author = await authorsService.updateAuthor(
       id,

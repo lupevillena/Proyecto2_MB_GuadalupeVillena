@@ -1,5 +1,7 @@
 const express = require('express');
 const postsService = require('../services/posts.service');
+const validatePost = require('../middleware/validatePost');
+const validated = require('../middleware/validated');
 
 const router = express.Router();
 
@@ -53,117 +55,85 @@ router.get('/:id', async (req, res, next) => {
 });
 
 // Crear un post
-router.post('/', async (req, res, next) => {
-  try {
-    const {
-      title,
-      content,
-      author_id,
-      published
-    } = req.body || {};
+router.post(
+  '/',
+  validatePost,
+  validated,
+  async (req, res, next) => {
+    try {
+      const {
+        title,
+        content,
+        author_id,
+        published
+      } = req.body || {};
 
-    // Validar título
-    if (!title || title.trim() === '') {
-      return res.status(400).json({
-        message: 'El título es obligatorio'
-      });
+      const post = await postsService.createPost(
+        title,
+        content,
+        author_id,
+        published
+      );
+
+      res.status(201).json(post);
+
+    } catch (error) {
+      // PostgreSQL: author_id no existe
+      if (error.code === '23503') {
+        return res.status(400).json({
+          message: 'El autor indicado no existe'
+        });
+      }
+
+      next(error);
     }
-
-    // Validar contenido
-    if (!content || content.trim() === '') {
-      return res.status(400).json({
-        message: 'El contenido es obligatorio'
-      });
-    }
-
-    // Validar autor
-    if (!author_id) {
-      return res.status(400).json({
-        message: 'El author_id es obligatorio'
-      });
-    }
-
-    const post = await postsService.createPost(
-      title,
-      content,
-      author_id,
-      published
-    );
-
-    res.status(201).json(post);
-
-  } catch (error) {
-    // PostgreSQL: author_id no existe
-    if (error.code === '23503') {
-      return res.status(400).json({
-        message: 'El autor indicado no existe'
-      });
-    }
-
-    next(error);
   }
-});
+);
 
 // Actualizar un post
-router.put('/:id', async (req, res, next) => {
-  try {
-    const id = req.params.id;
+router.put(
+  '/:id',
+  validatePost,
+  validated,
+  async (req, res, next) => {
+    try {
+      const id = req.params.id;
 
-    const {
-      title,
-      content,
-      author_id,
-      published
-    } = req.body || {};
+      const {
+        title,
+        content,
+        author_id,
+        published
+      } = req.body || {};
 
-    // Validar título
-    if (!title || title.trim() === '') {
-      return res.status(400).json({
-        message: 'El título es obligatorio'
-      });
+      const post = await postsService.updatePost(
+        id,
+        title,
+        content,
+        author_id,
+        published
+      );
+
+      if (!post) {
+        return res.status(404).json({
+          message: 'Post no encontrado'
+        });
+      }
+
+      res.json(post);
+
+    } catch (error) {
+      // PostgreSQL: author_id no existe
+      if (error.code === '23503') {
+        return res.status(400).json({
+          message: 'El autor indicado no existe'
+        });
+      }
+
+      next(error);
     }
-
-    // Validar contenido
-    if (!content || content.trim() === '') {
-      return res.status(400).json({
-        message: 'El contenido es obligatorio'
-      });
-    }
-
-    // Validar autor
-    if (!author_id) {
-      return res.status(400).json({
-        message: 'El author_id es obligatorio'
-      });
-    }
-
-    const post = await postsService.updatePost(
-      id,
-      title,
-      content,
-      author_id,
-      published
-    );
-
-    if (!post) {
-      return res.status(404).json({
-        message: 'Post no encontrado'
-      });
-    }
-
-    res.json(post);
-
-  } catch (error) {
-    // PostgreSQL: author_id no existe
-    if (error.code === '23503') {
-      return res.status(400).json({
-        message: 'El autor indicado no existe'
-      });
-    }
-
-    next(error);
   }
-});
+);
 
 // Eliminar un post
 router.delete('/:id', async (req, res, next) => {
