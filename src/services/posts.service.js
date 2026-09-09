@@ -1,4 +1,4 @@
-const pool = require('../db');
+const pool = require('../pool');
 
 // Obtener todos los posts
 const getAllPosts = async () => {
