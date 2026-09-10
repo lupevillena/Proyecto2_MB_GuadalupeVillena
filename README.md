@@ -419,6 +419,46 @@ Se utilizó principalmente para:
 
 Las funcionalidades fueron probadas durante el desarrollo antes de la entrega.
 
+### Evidencias del uso de Inteligencia Artificial
+
+Durante el desarrollo del proyecto se utilizó ChatGPT como herramienta de apoyo para resolver problemas encontrados durante la implementación y ejecución de la API.
+
+A continuación se muestran algunos ejemplos del proceso de depuración realizado con asistencia de Inteligencia Artificial.
+
+#### 1. Revisión del endpoint `GET /authors/:id`
+
+Durante las primeras pruebas se detectó un problema al consultar un autor por ID mediante `GET /authors/:id`. En lugar de obtener la información esperada del autor, la aplicación devolvía una respuesta incorrecta.
+
+Se utilizó ChatGPT para revisar la definición de la ruta y analizar el código relacionado con este endpoint.
+
+![](capturas/1.jpg)
+
+#### 2. Diagnóstico de la carga de rutas
+
+Después de revisar el código, el endpoint continuaba sin responder como se esperaba. Se realizaron pruebas adicionales para comprobar si las rutas de Express estaban siendo cargadas correctamente por la aplicación.
+
+ChatGPT fue utilizado como apoyo para definir pruebas temporales de diagnóstico y revisar el comportamiento del servidor.
+
+![](capturas/2.jpg)
+
+#### 3. Verificación del funcionamiento del servidor
+
+Durante el proceso de depuración se identificó que parte del problema estaba relacionado con la ejecución del servidor. Se realizaron diferentes pruebas desde la terminal hasta comprobar que Express y las rutas principales estaban funcionando correctamente.
+
+Esto permitió verificar el funcionamiento de `GET /` y `GET /authors` antes de continuar con el resto de los endpoints.
+
+![](capturas/3.jpg)
+
+#### 4. Interpretación del comportamiento de la terminal
+
+Durante las pruebas también surgió una duda porque la terminal parecía no mostrar una respuesta después de ejecutar el servidor.
+
+Se utilizó ChatGPT para interpretar este comportamiento y comprender que un proceso de Node.js puede permanecer activo mientras el servidor está ejecutándose y esperando solicitudes.
+
+![](capturas/4.jpg)
+
+Estas consultas se utilizaron como apoyo durante el proceso de aprendizaje, depuración y desarrollo del proyecto. Las soluciones aplicadas fueron posteriormente verificadas mediante la ejecución de la API, pruebas de los endpoints y tests automáticos con Jest y Supertest.
+
 ## Autor
 
 Guadalupe Villena
