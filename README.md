@@ -310,34 +310,34 @@ El proyecto utiliza dos servicios dentro de Railway:
 ### Proceso de deployment
 
 1.Se subió el proyecto al repositorio de GitHub.
-![Captura 1]capturas-railway/1.jpg
+![Captura 1](capturas-railway/1.jpg)
 
 2.Se conectó el repositorio de GitHub con Railway.
-![Captura 2]capturas-railway/2.jpg
+![Captura 2](capturas-railway/2.jpg)
 
 3.Se creó un servicio PostgreSQL dentro del proyecto de Railway.
-![Captura 3]capturas-railway/3.jpg
+![Captura 3](capturas-railway/3.jpg)
 
 4.Se configuraron las variables de entorno de la aplicación.
-![Captura 4]capturas-railway/4.jpg
+![Captura 4](capturas-railway/4.jpg)
 
 5.Se configuraron las referencias internas entre la API y PostgreSQL.
-![Captura 5]capturas-railway/5.jpg
+![Captura 5](capturas-railway/5.jpg)
 
 6.Se verificó el deployment exitoso de la API en Railway.
-![Captura 6]capturas-railway/6.jpg
+![Captura 6](capturas-railway/6.jpg)
 
 7.Se configuró el comando de inicio de la aplicación con npm start.
-![Captura 7]capturas-railway/7.jpg
+![Captura 7](capturas-railway/7.jpg)
 
 8.Se ejecutó setup.sql en PostgreSQL para crear las tablas authors y posts.
-![Captura 8]capturas-railway/8.jpg
+![Captura 8](capturas-railway/8.jpg)
 
 9.Se generó un dominio público para acceder a la API.
-![Captura 9]capturas-railway/9.jpg
+![Captura 9](capturas-railway/9.jpg)
 
 10.Se verificaron los endpoints y la documentación Swagger desde la URL pública.
-![Captura 10]capturas-railway/10.jpg
+![Captura 10](capturas-railway/10.jpg)
 
 ### Variables de entorno en Railway
 
